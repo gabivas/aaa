@@ -1,0 +1,70 @@
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+
+const app = express();
+
+app.use(bodyParser.json());
+app.use(cors());
+
+app.locals.cars = [{
+        make: "BMW",
+        model: "X6",
+        price: 50000
+    },
+    {
+        make: "Lamborghini",
+        model: "Huracan",
+        price: 200000
+    },
+];
+
+app.get('/cars', (req, res) => {
+    res.status(200).json(app.locals.cars);
+});
+
+app.post('/cars', (req, res) => {
+    if (req.body && !(Object.keys(req.body).length === 0 && req.body.constructor === Object))
+        if (req.body.make && req.body.model && req.body.price) {
+            let value = app.locals.cars.find(element => element.model === req.body.model)
+            console.log(value)
+            if (!value) {
+                if (req.body.price > 0) {
+                    app.locals.cars.push({
+                        make: req.body.make,
+                        model: req.body.model,
+                        price: req.body.price
+                    })
+
+                    res.status(201).send({
+                        'message': 'Created'
+                    })
+
+                }
+                else {
+                    res.status(500).send({
+                        'message': 'Price should be a positive number'
+                    })
+
+                }}
+            else {
+                res.status(500).send({
+                    'message': 'Car already exists'
+                })
+
+            }
+
+        }
+    else {
+        res.status(500).send({
+            'message': 'Invalid body format'
+        })
+    }
+    else {
+        res.status(500).send({
+            'message': 'Body is missing'
+        })
+    }
+})
+
+module.exports = app;

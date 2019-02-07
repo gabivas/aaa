@@ -1,0 +1,12 @@
+import React, { Component } from 'react';
+import CouponList from './CouponList'
+
+class App extends Component {
+  render() {
+    return (
+      <CouponList/>
+    );
+  }
+}
+
+export default App;
